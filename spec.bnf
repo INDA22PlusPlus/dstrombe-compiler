@@ -1,0 +1,43 @@
+<function> ::= fn <variable> (<params>) <scope> 
+<call> ::= <variable>(<params>);
+<scope> ::= { <sequence> }
+<sequence> ::= <statement> | <statement> <sequence>
+
+<statement> ::= <if-chain> | <loop> | <call> | <assignment> | <scope>
+
+<loop> ::= <for> | <while>
+<for> ::= for (<assignment> <cmp> <assignment>) <scope>
+<while> ::= while(<cmp>) <scope>
+
+<if-chain> ::= <if> | <if> <elif> | <if> <elif> <else>
+<else> ::= else <scope>
+<if> ::= if <conditional>
+<elif> ::= <if> <elif> | <elif> <elif> | else if <conditional>
+<conditional> ::= <expr> <scope>
+
+
+<assignement> ::= <variable> = <identifier>;
+<cmp> ::= <greater> | <less> | <greaterequals> | <lessthanequals>
+<greater> ::= <variable> > <variable>
+<less> ::= <variable> < <variable>
+<greaterequals> ::= <variable> >= <variable>
+<lessthanequals> ::= <variable> <= <variable>
+
+<expr> ::= <expr> | <identifier> + <expr> | <identifier>
+
+<identifier> ::= <variable> | <literal> | <cmp>  
+
+<literal> ::= <str> | <addr> | <shellcode> | <float> | <integer> | <bytes> 
+<addr> ::= <hexstr> | r<hexstr>
+
+<str> ::= "<ascii_letters>"
+<float> ::= 0.<integer>
+<hexint> ::=  0x<integer>
+
+<integer> ::=  <integer><digit> | <digit>
+<variable> ::= <letters>
+<letters> ::= <letter> | <variable> <letter>
+<digit> ::= 0|1|2|3|4|5|6|7|8|9
+<ascii_letters> ::= insert ascii charset here
+<letter> ::= a | b | c | d | e | f | g | h | i | j | k | l | m | n | o | p | q | r | s | t | u | v | w | x | y | z | A | B | C | D | E | F | G | H | I | J | K | L | M | N | O | P | Q | R | S | T | U | V | W | X | Y | Z 
+
