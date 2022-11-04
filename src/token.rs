@@ -1,38 +1,34 @@
-//stdlib fromhex
-
-enum Keyword {
+#[derive(Clone,Hash, Eq, PartialEq, Debug, Copy)]
+pub enum Keyword {
 
     // types
     Str,
-    Float,
     Integer,
-    Addr,
-    Boolean,
     
     // function
-    Function,
     If,
-    Elif,
-    Else,
-    For,
-    While
+    Loop,
+    Break,
+
+    // fudges
+    Print,
 }
 
-enum Identifier {
-    Function(String),
-    Variable(String),
+#[derive(Clone,Hash, Eq, PartialEq, Debug, Copy)]
+pub enum Identifier {
+    Variable,
 }
 
-enum Constant {
-    Str(String),
-    Float(f64),
-    Integer(i128),
-    Addr(u128),
+#[derive(Clone,Hash, Eq, PartialEq, Debug, Copy)]
+pub enum Constant {
+    Integer,
+    Str,
 }
 
 // Serve to group other tokens together mostly, for processing in conjunction
 // with eg. if-statements or grouping function args together
-enum SpecialChar {
+#[derive(Clone,Hash, Eq, PartialEq, Debug, Copy)]
+pub enum SpecialChar {
     LBracket,
     RBracket,
     LBrace,
@@ -41,20 +37,18 @@ enum SpecialChar {
     RParen,
     Semicolon,
 }
-
-enum BinaryOperator {
-    Plus,
-    Minus,
+#[derive(Clone,Hash, Eq, PartialEq, Debug, Copy)]
+pub enum BinaryOperator {
+    Add,
+    Sub,
     Mult,
     Div,
 
     LShift,
     RShift,
-
-    Assign,
     
-    GreaterOrEq,
-    LessOrEq,
+    Greater,
+    Less,
     Equals,
 
     Or,
@@ -62,19 +56,26 @@ enum BinaryOperator {
     Xor,
     
 }
+#[derive(Clone,Hash, Eq, PartialEq, Debug, Copy)]
+pub enum AssignmentOperator{
+    Assign,
+}
 
-enum UnaryOperator {
+#[derive(Clone,Hash, Eq, PartialEq, Debug, Copy)]
+pub enum UnaryOperator {
     Not
 }
+
+
 // Main token representation
-enum Token {
+#[derive(Clone,Hash, Eq, PartialEq, Debug, Copy)]
+pub enum Token {
     Keyword(Keyword),
     Identifier(Identifier),
     Constant(Constant),
     SpecialChar(SpecialChar),
     BinaryOperator(BinaryOperator),
-    UnaryOperator(UnaryOperator)
+    UnaryOperator(UnaryOperator),
+    AssignmentOperator(AssignmentOperator)
 }
-
-
 
