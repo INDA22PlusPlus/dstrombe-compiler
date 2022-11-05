@@ -164,8 +164,6 @@ fn emit_expr(node : SyntaxNode, stack_context : &mut AsmCtx) -> String {
     }
     // unary expression; a value
     else {
-        println!("parent: {:?} childcnt: {:?}", node.grammar, node.children.len());
-
         code = emit_value(node.children[0].clone(), stack_context);
 
     }
@@ -173,7 +171,6 @@ fn emit_expr(node : SyntaxNode, stack_context : &mut AsmCtx) -> String {
 }
 fn emit_value(node : SyntaxNode, stack_context : &mut AsmCtx) -> String {
     let mut code = String::new();
-    println!("child: {:?} childcnt: {:?}", node.grammar, node.children.len());
     let innerstr = node.children[0].clone().data.expect(&format!("value is none {:?}", node.children[0].grammar));
 
     match node.children[0].grammar {
@@ -225,7 +222,7 @@ fn emit_reference(node : SyntaxNode, stack_context : &mut AsmCtx) -> String {
         GrammarType::Token(tkn) => {
             match tkn {
                 token::Token::Keyword(kw) => {
-                    println!("new var!");
+                    
                     // variable declaration
                     let varname = node.children[1].clone().data.unwrap().inner_data;
                     let l = stack_context.scope_stack.len();
