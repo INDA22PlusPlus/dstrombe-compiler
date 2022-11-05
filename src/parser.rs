@@ -17,7 +17,7 @@ enum ParseRule {
     AnyInt
 }
 
-#[derive(Clone, PartialEq, Eq)]
+#[derive(Clone, PartialEq, Eq, Debug)]
 pub struct TokenData {
     pub token : Token,
     pub src_length : usize,
@@ -57,11 +57,11 @@ pub struct Grammar {
     grammar_pattern : Vec<GrammarRule>,
     return_pattern : Vec<GrammarRule>,
 }
-#[derive(Clone, PartialEq, Eq)]
+#[derive(Clone, PartialEq, Eq, Debug)]
 pub struct SyntaxNode {
     pub grammar : GrammarType,
-    pub children : Vec<SyntaxNode>,
     pub data : Option<TokenData>,
+    pub children : Vec<SyntaxNode>,
 }
 // operator precedence logic. 
 /* 
@@ -360,7 +360,7 @@ impl Parser {
                     }
                     else {
                     }
-                    println!("got {:?} at {:?}", tokens[i].token, i as i32 + tptr)
+                    //println!("got {:?} at {:?}", tokens[i].token, i as i32 + tptr)
 
                 }
                 _ => {
@@ -382,12 +382,12 @@ impl Parser {
                         // println!("{:?}, {:?}",  grammar_to_check, matching_rulepair.grammar_type);
 
                         // continue parsing the tokens from where we have not yet parsed
-                        println!("{:?}", grammar_to_check);
+                        //println!("{:?}", grammar_to_check);
 
                         let parsed = self.parse_ahead(matching_rulepair, tokens[i..tokens.len()].to_vec(), tptr + i as i32);
                         if(parsed.is_some()) {
                             let child_node = parsed.unwrap();
-                            println!("got at i={:?}: {:?} (called from grammar_to_check: {:?})", child_node.0, child_node.1.grammar, grammar_to_check);
+                            //println!("got at i={:?}: {:?} (called from grammar_to_check: {:?})", child_node.0, child_node.1.grammar, grammar_to_check);
                             potential_nodes.push(child_node);
                         }
 
@@ -406,10 +406,10 @@ impl Parser {
                 }
             }
             if(matched_node.is_some()) {
-            println!("grammar_to_check: {:?} matched: {:?}, rules[rule_idx].occurs: {:?}", grammar_to_check, matched_node.clone().unwrap().1.grammar, rules[rule_idx].occurs);
+            //println!("grammar_to_check: {:?} matched: {:?}, rules[rule_idx].occurs: {:?}", grammar_to_check, matched_node.clone().unwrap().1.grammar, rules[rule_idx].occurs);
         }
         else {
-            println!("grammar_to_check: {:?} matched: {:?}, {:?}, rules[rule_idx].occurs: {:?}", grammar_to_check, "None", rules[rule_idx].required, rules[rule_idx].occurs);
+            //println!("grammar_to_check: {:?} matched: {:?}, {:?}, rules[rule_idx].occurs: {:?}", grammar_to_check, "None", rules[rule_idx].required, rules[rule_idx].occurs);
 
         }
             // TODO: turn this into a subfunction
@@ -468,11 +468,11 @@ impl Parser {
                                 x.occurs == FreqRule::OneOf
                             ).collect::<Vec<GrammarRule>>().len() > 0);
                             if !is_fine {
-                                println!("it was not fine.");
+                                //println!("it was not fine.");
                                 return None;
                             }
                             else {
-                                println!("it's fine: {:?} has_matched_oneof: {:?}", grammar.clone().return_pattern[rule_idx].required, has_matched_oneof);
+                                //println!("it's fine: {:?} has_matched_oneof: {:?}", grammar.clone().return_pattern[rule_idx].required, has_matched_oneof);
                                 rule_idx += 1;
                             }
                         }
@@ -487,8 +487,10 @@ impl Parser {
             
         }
         // step 3: arrange the syntaxnodes we parsed into a branch that adheres to Grammar.return_pattern.
-
-        for grammar_rule in grammar.clone().return_pattern {
+        let mut j : usize = 0;
+        let rp = grammar.clone().return_pattern;
+        while j < rp.len() {
+            let grammar_rule = rp[j];
             // find the first idx of a node whose grammar matches grammar_rule
             let matching_idx = unsorted_syntax_nodes.iter().position(|stx_node| {
                 stx_node.grammar == grammar_rule.required
@@ -498,14 +500,27 @@ impl Parser {
                     // quickref: swap_remove removes an item at idx and returns it
                     let node = unsorted_syntax_nodes.swap_remove(idx);
                     root_syntax_node.children.push(node);
+                    match grammar_rule.occurs {
+                        FreqRule::Any => { 
+
+                        }
+                        FreqRule::Once => { 
+                            j += 1;
+                        }
+                        FreqRule::OneOf => { 
+                            j += 1;
+                        }
+                        _ => panic!("not implemented")
+                    }
                 }
                 None => {
+                    j += 1;
                     // must be a OneOf rule. Do nothing ig. Unless?
                 }
             } 
             
         }
-        println!("returned at i = {:?}: {:?}", i, grammar_to_check);
+        //println!("returned at i = {:?}: {:?}", i, grammar_to_check);
         Some((i, root_syntax_node))
         
     }
