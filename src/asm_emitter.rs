@@ -1,4 +1,3 @@
-use std::thread::Scope;
 
 /* */
 use crate::token::{self, Identifier, BinaryOperator};
